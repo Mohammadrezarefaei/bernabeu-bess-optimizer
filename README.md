@@ -22,11 +22,7 @@ A bankable valuation and energy optimization platform designed to evaluate utili
 | **Financial Modeling** | Custom Python Backend | Evaluates a 70/30 debt-to-equity structure, CAPEX, bank debt, equity, and DSCR. |
 | **Interactive UI** | Streamlit, Matplotlib | Provides a dark-themed UI with dynamic sliders and automated 24-hour curves. |
 ---
-git clone https://github.com/Mohammadrezarefaei/bernabeu-bess-optimizer.git
-cd bernabeu-bess-optimizer
-cd pip install -r requirements.txt
-cd streamlit run app.py
----
+
 
 ## Project Structure
 
