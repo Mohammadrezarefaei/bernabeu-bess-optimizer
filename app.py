@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
 from PIL import Image
 from utils.scenarios import generate_stadium_load_profile
 from models.optimizer import run_bess_optimization
@@ -33,10 +34,12 @@ col_map, col_controls = st.columns(2)
 with col_map:
     st.subheader("Stadium Layout")
     try:
-        # Force resize image physically in memory so it cannot overflow or render huge
-        img = Image.open("bernabeu_layout.png")
-        img.thumbnail((400, 400))
-        st.image(img, use_container_width=False)
+        thumb_path = "bernabeu_thumb.png"
+        if not os.path.exists(thumb_path):
+            img = Image.open("bernabeu_layout.png")
+            img.thumbnail((350, 350))
+            img.save(thumb_path)
+        st.image(thumb_path, width=320)
     except FileNotFoundError:
         st.error("⚠️ File 'bernabeu_layout.png' not found in root directory.")
 
