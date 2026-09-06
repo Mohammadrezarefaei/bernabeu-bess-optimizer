@@ -28,12 +28,16 @@ zone_mapping = {
     "Fondo Sur (C/ Avda. De Concha Espina)": {"mult": 1.1, "desc": "South stand, massive crowd surge capacity and concourse services."}
 }
 
-col_map, col_controls = st.columns([1.2, 1])
+# Use equal columns to prevent image stretching
+col_map, col_controls = st.columns([1, 1])
 
 with col_map:
+    st.subheader("Stadium Layout")
     try:
-        img = Image.open("bernabeu_layout.png")
-        st.image(img, use_container_width=True)
+        img_path = "bernabeu_layout.png"
+        img = Image.open(img_path)
+        # Fixed width control to prevent giant zooming
+        st.image(img, width=450)
     except FileNotFoundError:
         st.error("⚠️ File 'bernabeu_layout.png' not found in root directory.")
 
