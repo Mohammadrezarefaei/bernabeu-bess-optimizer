@@ -87,21 +87,19 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Robust image path check across potential root or asset locations
-layout_paths = ["bernebeu_layout.png", "assets/bernebeu_layout.png"]
-loaded_image = None
-for path in layout_paths:
-  if os.path.exists(path):
-    loaded_image = Image.open(path)
-    break
+# Precise absolute path resolution for the layout image
+base_dir = os.path.dirname(os.path.abspath(__file__))
+layout_path = os.path.join(base_dir, "bernebeu_layout.png")
 
-if loaded_image is not None:
+if os.path.exists(layout_path):
   st.subheader("Stadium Layout & Zone Mapping")
   st.image(
-      loaded_image,
+      Image.open(layout_path),
       caption="Santiago Bernabéu Layout & BESS Zones",
       use_container_width=True,
   )
+else:
+  st.warning(f"⚠️ Image not found at expected path: {layout_path}")
 
 # Generate load profiles and run optimization engine
 df_load = generate_stadium_load_profile(scenario)
