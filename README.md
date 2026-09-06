@@ -7,20 +7,20 @@ A bankable valuation and energy optimization platform designed to evaluate utili
 
 ---
 
-## Key Features
+## Stadium Layout & Zone Mapping
 
-* **Zone-Specific Load Profiling:** Models power demand across distinct stadium stands (Lateral Oeste, Lateral Este, Fondo Norte, and Fondo Sur) using custom load multipliers and event scenarios.
-* **Peak Shaving Optimization:** Solves daily power dispatch vectors to reduce grid strain, shave peak loads, and maximize cost savings.
-* **Bankable Financial Modeling:** Evaluates project feasibility through a 70/30 debt-to-equity financing structure, calculating total CAPEX, bank debt, equity requirements, and the Debt Service Coverage Ratio (DSCR).
-* **Interactive Web Interface:** Built with Streamlit featuring a dark-themed UI, dynamic power/energy sliders, automated 24-hour dispatch curve plotting, and stadium layout visualization.
+![Santiago Bernabéu Layout & BESS Zones](bernabeu_layout.png)
 
 ---
 
-## Tech Stack
+## Key Features & Architecture
 
-* **Frontend / Dashboard:** Streamlit, Matplotlib, PIL (Pillow)
-* **Data Processing & Math:** Pandas, NumPy
-* **Optimization & Financials:** Custom modular backend (`models/optimizer.py`, `models/financials.py`, `utils/scenarios.py`)
+| Component / Module | Technology Stack | Primary Function |
+| :--- | :--- | :--- |
+| **Zone Profiling** | Python, Pandas | Models power demand across distinct stadium stands using custom load multipliers. |
+| **Optimization Engine** | NumPy, Custom Logic | Solves daily power dispatch vectors for peak shaving and grid strain reduction. |
+| **Financial Modeling** | Custom Python Backend | Evaluates a 70/30 debt-to-equity structure, CAPEX, bank debt, equity, and DSCR. |
+| **Interactive UI** | Streamlit, Matplotlib | Provides a dark-themed UI with dynamic sliders and automated 24-hour curves. |
 
 ---
 
