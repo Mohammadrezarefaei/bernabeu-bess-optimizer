@@ -21,12 +21,12 @@ st.markdown("""
 st.title("🏟️ Santiago Bernabéu Digital Interactive Map")
 st.markdown("Advanced BESS Optimization & 70/30 Financial Model with Zone-Based Digital Mapping.")
 
-# Zone definitions & characteristics
+# Zone definitions & structural characteristics based on the exact image layout
 zone_mapping = {
-    "Lateral Oeste (Pº de la Castellana)": {"mult": 1.2, "desc": "Main grandstand, VIP boxes, heavy HVAC and media load.", "y_range": (0, 250)},
-    "Lateral Este (C/ Padre Damián)": {"mult": 1.0, "desc": "East lateral stand, hospitality lounges, and auxiliary operations.", "y_range": (550, 800)},
-    "Fondo Norte (C/ Rafael Salgado)": {"mult": 0.9, "desc": "North stand, standard seating, and lighting draw.", "x_range": (550, 800)},
-    "Fondo Sur (C/ Avda. De Concha Espina)": {"mult": 1.1, "desc": "South stand, massive crowd surge capacity and concourse services.", "x_range": (0, 250)}
+    "Lateral Oeste (Pº de la Castellana)": {"mult": 1.2, "desc": "Main grandstand, VIP boxes, heavy HVAC and media load."},
+    "Lateral Este (C/ Padre Damián)": {"mult": 1.0, "desc": "East lateral stand, hospitality lounges, and auxiliary operations."},
+    "Fondo Norte (C/ Rafael Salgado)": {"mult": 0.9, "desc": "North stand, standard seating, and lighting draw."},
+    "Fondo Sur (C/ Avda. De Concha Espina)": {"mult": 1.1, "desc": "South stand, massive crowd surge capacity and concourse services."}
 }
 
 col_map, col_controls = st.columns([1.3, 1])
@@ -34,7 +34,7 @@ col_map, col_controls = st.columns([1.3, 1])
 with col_controls:
     st.subheader("Configuration & Zone Selection")
     
-    # Fallback or direct selection dropdown synced with map
+    # Dropdown synchronized with digital map selection
     selected_stand = st.selectbox(
         "Select Stadium Zone / Stand:",
         list(zone_mapping.keys())
@@ -51,10 +51,9 @@ with col_map:
         img = Image.open("bernabeu_layout.png")
         width, height = img.size
     except FileNotFoundError:
-        st.error("⚠️ 'bernabeu_layout.png' not found.")
+        st.error("⚠️ 'bernabeu_layout.png' not found in root directory.")
         width, height = 800, 800
 
-    # Create Plotly figure with background image and interactive digital zones
     fig = go.Figure()
 
     # Add Bernabéu layout as background image
@@ -67,44 +66,50 @@ with col_map:
         sizex=width,
         sizey=height,
         sizing="stretch",
-        opacity=0.85,
+        opacity=0.9,
         layer="below"
     )
 
-    # Define interactive hover regions corresponding to the 4 sides
-    zones_coords = [
-        {"name": "Lateral Oeste (Pº de la Castellana)", "x": [width*0.2, width*0.8, width*0.8, width*0.2], "y": [height*0.05, height*0.05, height*0.25, height*0.25]},
-        {"name": "Lateral Este (C/ Padre Damián)", "x": [width*0.2, width*0.8, width*0.8, width*0.2], "y": [height*0.75, height*0.75, height*0.95, height*0.95]},
-        {"name": "Fondo Norte (C/ Rafael Salgado)", "x": [width*0.75, width*0.95, width*0.95, height*0.75], "y": [height*0.2, height*0.2, height*0.8, height*0.8]},
-        {"name": "Fondo Sur (C/ Avda. De Concha Espina)", "x": [width*0.05, width*0.25, width*0.25, width*0.05], "y": [height*0.2, height*0.2, height*0.8, height*0.8]}
+    # Interactive digital hotspots mapped precisely to the 4 stands in the image
+    zones_data = [
+        {"name": "Lateral Oeste (Pº de la Castellana)", "x": width * 0.5, "y": height * 0.15},
+        {"name": "Lateral Este (C/ Padre Damián)", "x": width * 0.5, "y": height * 0.88},
+        {"name": "Fondo Norte (C/ Rafael Salgado)", "x": width * 0.88, "y": height * 0.5},
+        {"name": "Fondo Sur (C/ Avda. De Concha Espina)", "x": width * 0.12, "y": height * 0.5}
     ]
 
-    # Add transparent scatter regions for hovering and tooltips
-    fig.add_trace(go.Scatter(
-        x=[width*0.5, width*0.5, width*0.8, width*0.2],
-        y=[height*0.15, height*0.85, height*0.5, height*0.5],
-        mode="markers+text",
-        text=["Lateral Oeste", "Lateral Este", "Fondo Norte", "Fondo Sur"],
-        textposition="top center",
-        textfont=dict(color="#00ff7f", size=14, family="Arial Black"),
-        marker=dict(size=14, color="#00ff7f", symbol="square", line=dict(width=2, color="white")),
-        hoverinfo="text",
-        hovertext=[f"<b>{k}</b><br>{v['desc']}" for k, v in zone_mapping.items()]
-    ))
+    for z in zones_data:
+        is_selected = (z["name"] == selected_stand)
+        fig.add_trace(go.Scatter(
+            x=[z["x"]],
+            y=[z["y"]],
+            mode="markers+text",
+            text=[z["name"].split(" ")[0]],
+            textposition="top center",
+            textfont=dict(color="#00ff7f" if is_selected else "#ffffff", size=13, family="Arial Black"),
+            marker=dict(
+                size=22 if is_selected else 16,
+                color="#00ff7f" if is_selected else "#ff4b4b",
+                symbol="hexagon",
+                line=dict(width=2, color="white")
+            ),
+            name=z["name"],
+            hoverinfo="text",
+            hovertext=f"<b>{z['name']}</b><br>{zone_mapping[z['name']]['desc']}"
+        ))
 
     fig.update_xaxes(range=[0, width], showgrid=False, zeroline=False, visible=False)
     fig.update_yaxes(range=[height, 0], showgrid=False, zeroline=False, visible=False)
     fig.update_layout(
-        width=600,
-        height=600,
+        width=550,
+        height=550,
         margin=dict(l=0, r=0, t=0, b=0),
         paper_bgcolor="#0e1117",
         plot_bgcolor="#0e1117",
         showlegend=False
     )
 
-    # Render interactive map in Streamlit and capture selection/clicks
-    event = st.plotly_chart(fig, use_container_width=True, on_select="rerun", selection_mode="points")
+    st.plotly_chart(fig, use_container_width=True)
 
 current_zone = zone_mapping[selected_stand]
 
@@ -116,7 +121,7 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# Run optimization & financial models
+# Run optimization & financial calculations
 df_load = generate_stadium_load_profile(scenario)
 load_vector = df_load['Load_MW'].values * current_zone["mult"]
 
