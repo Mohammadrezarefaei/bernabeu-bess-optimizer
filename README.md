@@ -24,8 +24,8 @@ A bankable valuation and energy optimization platform designed to evaluate utili
 ---
 git clone https://github.com/Mohammadrezarefaei/bernabeu-bess-optimizer.git
 cd bernabeu-bess-optimizer
-pip install -r requirements.txt
-streamlit run app.py
+cd pip install -r requirements.txt
+cd streamlit run app.py
 ---
 
 ## Project Structure
