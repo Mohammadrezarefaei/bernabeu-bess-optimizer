@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import base64
 from PIL import Image
 from utils.scenarios import generate_stadium_load_profile
 from models.optimizer import run_bess_optimization
@@ -15,12 +16,7 @@ st.markdown("""
     h1, h2, h3 { color: #00ff7f !important; }
     .stMarkdown p { color: #e6edf3; }
     .zone-card { background-color: #161b22; padding: 15px; border-radius: 8px; border: 1px solid #30363d; margin-bottom: 20px; }
-    /* Force strict image containment to prevent giant overflow */
-    [data-testid="stImage"] img {
-        max-width: 100% !important;
-        height: auto !important;
-        border-radius: 8px;
-    }
+    .stadium-img { width: 100%; max-width: 400px; display: block; margin: 0 auto; border-radius: 8px; border: 1px solid #30363d; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -39,8 +35,9 @@ col_map, col_controls = st.columns(2)
 with col_map:
     st.subheader("Stadium Layout")
     try:
-        img = Image.open("bernabeu_layout.png")
-        st.image(img, use_container_width=True)
+        with open("bernabeu_layout.png", "rb") as image_file:
+            encoded_img = base64.b64encode(image_file.read()).decode()
+        st.markdown(f'<img src="data:image/png;base64,{encoded_img}" class="stadium-img">', unsafe_allow_html=True)
     except FileNotFoundError:
         st.error("⚠️ File 'bernabeu_layout.png' not found in root directory.")
 
