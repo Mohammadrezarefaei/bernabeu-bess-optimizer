@@ -87,9 +87,9 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Precise absolute path resolution for the layout image
+# Corrected filename path mapping
 base_dir = os.path.dirname(os.path.abspath(__file__))
-layout_path = os.path.join(base_dir, "bernebeu_layout.png")
+layout_path = os.path.join(base_dir, "bernabeu_layout.png")
 
 if os.path.exists(layout_path):
   st.subheader("Stadium Layout & Zone Mapping")
