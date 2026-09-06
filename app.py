@@ -31,7 +31,6 @@ zone_mapping = {
 col_map, col_controls = st.columns([1.2, 1])
 
 with col_map:
-    st.subheader("Santiago Bernabéu Layout")
     try:
         img_path = "bernabeu_layout.png"
         img = Image.open(img_path)
@@ -56,7 +55,6 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# Run optimization & financials
 df_load = generate_stadium_load_profile(scenario)
 load_vector = df_load['Load_MW'].values * current_zone["mult"]
 
