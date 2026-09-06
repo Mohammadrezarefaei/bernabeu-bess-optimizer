@@ -20,16 +20,17 @@ st.markdown("""
 st.title("🏟️ Santiago Bernabéu BESS Financial & Energy Dashboard")
 st.markdown("Bankable valuation platform for 70/30 debt-to-equity financing structure.")
 
-# Layout: Image map on left, Controls on right
 col_map, col_controls = st.columns([1.1, 1])
 
 with col_map:
     st.subheader("Stadium Stand Interactive Map")
     try:
-        img = Image.open("bernabeu_layout.png")
+        img_path = "bernabeu_layout.png"
+        img = Image.open(img_path)
+        st.image(img, caption="Santiago Bernabéu Layout", use_container_width=True)
         coords = streamlit_image_coordinates(img, key="bernabeu_map")
     except FileNotFoundError:
-        st.error("File 'bernabeu_layout.png' not found in root directory.")
+        st.error("⚠️ File 'bernabeu_layout.png' not found in root directory.")
         coords = None
 
 with col_controls:
@@ -46,7 +47,6 @@ with col_controls:
     }
     selected_stand = st.selectbox("Select Zone / Stand", list(zone_mapping.keys()))
 
-# Run simulation
 df_load = generate_stadium_load_profile(scenario)
 load_vector = df_load['Load_MW'].values * zone_mapping[selected_stand]
 
@@ -54,7 +54,6 @@ market_params = {"base_price": 80.0, "peak_price": 180.0, "demand_charge": 35.0}
 results = run_bess_optimization(load_vector, market_params, power_rating, energy_capacity)
 fin_results = calculate_bankable_financials(results['Annual_Savings'])
 
-# Display Metrics
 st.markdown("---")
 st.subheader(f"Operational & Financial Performance ({selected_stand})")
 col1, col2, col3, col4 = st.columns(4)
@@ -69,7 +68,6 @@ fcol2.metric("Bank Debt (70%)", f"{fin_results['Debt_70_Percent_EUR']:,.0f} EUR"
 fcol3.metric("Equity (30%)", f"{fin_results['Equity_30_Percent_EUR']:,.0f} EUR")
 fcol4.metric("DSCR (Coverage Ratio)", f"{fin_results['DSCR']:.2f}x", delta="Safe (>1.25)" if fin_results['DSCR'] >= 1.25 else "Check")
 
-# Plotting
 st.subheader(f"24-Hour Power Dispatch ({scenario})")
 fig, ax = plt.subplots(figsize=(10, 4), facecolor='#0e1117')
 ax.set_facecolor('#0e1117')
