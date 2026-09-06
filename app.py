@@ -1,3 +1,4 @@
+cat << 'EOF' > app.py
 import streamlit as st
 import numpy as np
 import pandas as pd
@@ -79,3 +80,4 @@ ax.tick_params(colors='white')
 ax.grid(True, color='#333333', linestyle='--')
 ax.legend(loc="upper left", facecolor='#161b22', edgecolor='none')
 st.pyplot(fig)
+EOF
