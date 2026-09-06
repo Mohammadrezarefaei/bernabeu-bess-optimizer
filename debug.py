@@ -1,10 +1,9 @@
+cat << 'EOF' > debug.py
 import os
 import importlib.util
 
 def run_diagnostics():
     print("--- 🔍 BESS Dashboard Diagnostics ---")
-    
-    # Check essential files and directories
     required_files = [
         "app.py",
         "bernabeu_layout.png",
@@ -13,13 +12,11 @@ def run_diagnostics():
         "models/financials.py",
         "requirements.txt"
     ]
-    
     print("\n[File Check]")
     for file_path in required_files:
         exists = os.path.exists(file_path)
         print(f"  - {file_path}: {'✅ Found' if exists else '❌ Missing'}")
         
-    # Check Python packages
     required_packages = [
         "streamlit",
         "pandas",
@@ -29,7 +26,6 @@ def run_diagnostics():
         "pulp",
         "streamlit_image_coordinates"
     ]
-    
     print("\n[Package Check]")
     for pkg in required_packages:
         spec = importlib.util.find_spec(pkg)
@@ -37,3 +33,5 @@ def run_diagnostics():
 
 if __name__ == "__main__":
     run_diagnostics()
+EOF
+python3 debug.py
