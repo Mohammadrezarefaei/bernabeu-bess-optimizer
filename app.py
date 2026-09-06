@@ -15,6 +15,12 @@ st.markdown("""
     h1, h2, h3 { color: #00ff7f !important; }
     .stMarkdown p { color: #e6edf3; }
     .zone-card { background-color: #161b22; padding: 15px; border-radius: 8px; border: 1px solid #30363d; margin-bottom: 20px; }
+    /* Force strict image containment to prevent giant overflow */
+    [data-testid="stImage"] img {
+        max-width: 100% !important;
+        height: auto !important;
+        border-radius: 8px;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -28,16 +34,13 @@ zone_mapping = {
     "Fondo Sur (C/ Avda. De Concha Espina)": {"mult": 1.1, "desc": "South stand, massive crowd surge capacity and concourse services."}
 }
 
-# Use equal columns to prevent image stretching
-col_map, col_controls = st.columns([1, 1])
+col_map, col_controls = st.columns(2)
 
 with col_map:
     st.subheader("Stadium Layout")
     try:
-        img_path = "bernabeu_layout.png"
-        img = Image.open(img_path)
-        # Fixed width control to prevent giant zooming
-        st.image(img, width=450)
+        img = Image.open("bernabeu_layout.png")
+        st.image(img, use_container_width=True)
     except FileNotFoundError:
         st.error("⚠️ File 'bernabeu_layout.png' not found in root directory.")
 
