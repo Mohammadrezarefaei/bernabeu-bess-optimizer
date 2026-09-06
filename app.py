@@ -22,8 +22,7 @@ st.markdown("""
 st.title("🏟️ Santiago Bernabéu Interactive Zone Explorer")
 st.markdown("Bankable valuation platform for 70/30 debt-to-equity financing structure and zone-based BESS optimization.")
 
-col_map, col_controls = st.columns([1.2, 1])
-
+# Zone definitions
 zone_mapping = {
     "Lateral Oeste (Pº de la Castellana)": {"mult": 1.2, "desc": "Main grandstand, VIP boxes, heavy HVAC and media load."},
     "Lateral Este (C/ Padre Damián)": {"mult": 1.0, "desc": "East lateral stand, hospitality lounges, and auxiliary operations."},
@@ -31,20 +30,13 @@ zone_mapping = {
     "Fondo Sur (C/ Avda. De Concha Espina)": {"mult": 1.1, "desc": "South stand, massive crowd surge capacity and concourse services."}
 }
 
-with col_map:
-    st.subheader("Stadium Stand Layout")
-    try:
-        img_path = "bernabeu_layout.png"
-        img = Image.open(img_path)
-        st.image(img, caption="Santiago Bernabéu Structural Layout", use_container_width=True)
-    except FileNotFoundError:
-        st.error("⚠️ File 'bernabeu_layout.png' not found in root directory.")
+col_controls, col_map = st.columns([1, 1.2])
 
 with col_controls:
-    st.subheader("Zone Selection & Configuration")
+    st.subheader("Configuration Panel")
     
-    # Clean radio buttons for instant zone switching like a ticketing platform
-    selected_stand = st.radio(
+    # Interactive Zone Selector (acts like a ticketing seat map selection)
+    selected_stand = st.selectbox(
         "Select Stadium Stand / Zone:",
         list(zone_mapping.keys())
     )
@@ -53,13 +45,22 @@ with col_controls:
     power_rating = st.slider("BESS Power Rating (MW)", 2.0, 15.0, 5.0, 0.5)
     energy_capacity = st.slider("BESS Energy Capacity (MWh)", 4.0, 30.0, 10.0, 1.0)
 
+with col_map:
+    st.subheader("Stadium Stand Structural Layout")
+    try:
+        img_path = "bernabeu_layout.png"
+        img = Image.open(img_path)
+        st.image(img, caption=f"Active Focus: {selected_stand}", use_container_width=True)
+    except FileNotFoundError:
+        st.error("⚠️ File 'bernabeu_layout.png' not found in root directory.")
+
 current_zone = zone_mapping[selected_stand]
 
 st.markdown(f"""
 <div class="zone-card">
-    <h4>📍 Active Zone: {selected_stand}</h4>
+    <h4>📍 Active Zone Details: {selected_stand}</h4>
     <p><b>Characteristics:</b> {current_zone['desc']}</p>
-    <p><b>Load Multiplier:</b> {current_zone['mult']}x</p>
+    <p><b>Load Multiplier:</b> {current_zone['mult']}x applied to base stadium profile.</p>
 </div>
 """, unsafe_allow_html=True)
 
