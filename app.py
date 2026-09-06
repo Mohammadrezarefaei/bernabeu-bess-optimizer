@@ -32,8 +32,7 @@ col_map, col_controls = st.columns([1.2, 1])
 
 with col_map:
     try:
-        img_path = "bernabeu_layout.png"
-        img = Image.open(img_path)
+        img = Image.open("bernabeu_layout.png")
         st.image(img, use_container_width=True)
     except FileNotFoundError:
         st.error("⚠️ File 'bernabeu_layout.png' not found in root directory.")
