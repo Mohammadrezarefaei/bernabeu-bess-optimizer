@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from PIL import Image
-from streamlit_image_coordinates import streamlit_image_coordinates
 from utils.scenarios import generate_stadium_load_profile
 from models.optimizer import run_bess_optimization
 from models.financials import calculate_bankable_financials
@@ -25,55 +24,40 @@ st.markdown("Bankable valuation platform for 70/30 debt-to-equity financing stru
 
 col_map, col_controls = st.columns([1.2, 1])
 
+zone_mapping = {
+    "Lateral Oeste (Pº de la Castellana)": {"mult": 1.2, "desc": "Main grandstand, VIP boxes, heavy HVAC and media load."},
+    "Lateral Este (C/ Padre Damián)": {"mult": 1.0, "desc": "East lateral stand, hospitality lounges, and auxiliary operations."},
+    "Fondo Norte (C/ Rafael Salgado)": {"mult": 0.9, "desc": "North stand, standard seating, and lighting draw."},
+    "Fondo Sur (C/ Avda. De Concha Espina)": {"mult": 1.1, "desc": "South stand, massive crowd surge capacity and concourse services."}
+}
+
 with col_map:
-    st.subheader("Stadium Stand Interactive Map")
+    st.subheader("Stadium Stand Layout")
     try:
         img_path = "bernabeu_layout.png"
         img = Image.open(img_path)
-        st.image(img, caption="Click on any section of the stadium to inspect zone load characteristics.", use_container_width=True)
-        coords = streamlit_image_coordinates(img, key="bernabeu_map")
+        st.image(img, caption="Santiago Bernabéu Structural Layout", use_container_width=True)
     except FileNotFoundError:
         st.error("⚠️ File 'bernabeu_layout.png' not found in root directory.")
-        coords = None
 
 with col_controls:
-    st.subheader("Configuration Panel")
+    st.subheader("Zone Selection & Configuration")
+    
+    # Clean radio buttons for instant zone switching like a ticketing platform
+    selected_stand = st.radio(
+        "Select Stadium Stand / Zone:",
+        list(zone_mapping.keys())
+    )
+    
     scenario = st.selectbox("Operating Scenario", ["Concert / Mega Event Day", "Match Day", "Non-Event Day"])
     power_rating = st.slider("BESS Power Rating (MW)", 2.0, 15.0, 5.0, 0.5)
     energy_capacity = st.slider("BESS Energy Capacity (MWh)", 4.0, 30.0, 10.0, 1.0)
-    
-    zone_mapping = {
-        "Lateral Oeste (Pº de la Castellana)": {"mult": 1.2, "desc": "Main grandstand, VIP boxes, heavy HVAC and media load."},
-        "Lateral Este (C/ Padre Damián)": {"mult": 1.0, "desc": "East lateral stand, hospitality lounges, and auxiliary operations."},
-        "Fondo Norte (C/ Rafael Salgado)": {"mult": 0.9, "desc": "North stand, standard seating, and lighting draw."},
-        "Fondo Sur (C/ Avda. De Concha Espina)": {"mult": 1.1, "desc": "South stand, massive crowd surge capacity and concourse services."}
-    }
-    
-    # Default selection or map coordinate interpretation
-    selected_stand = "Lateral Oeste (Pº de la Castellana)"
-    
-    if coords is not None:
-        x, y = coords["x"], coords["y"]
-        if y < 150:
-            selected_stand = "Lateral Oeste (Pº de la Castellana)"
-        elif y > 350:
-            selected_stand = "Lateral Este (C/ Padre Damián)"
-        elif x < 200:
-            selected_stand = "Fondo Sur (C/ Avda. De Concha Espina)"
-        else:
-            selected_stand = "Fondo Norte (C/ Rafael Salgado)"
-
-    selected_stand = st.selectbox(
-        "Active Stand / Zone (or click on map)", 
-        list(zone_mapping.keys()),
-        index=list(zone_mapping.keys()).index(selected_stand)
-    )
 
 current_zone = zone_mapping[selected_stand]
 
 st.markdown(f"""
 <div class="zone-card">
-    <h4>📍 Selected Zone: {selected_stand}</h4>
+    <h4>📍 Active Zone: {selected_stand}</h4>
     <p><b>Characteristics:</b> {current_zone['desc']}</p>
     <p><b>Load Multiplier:</b> {current_zone['mult']}x</p>
 </div>
