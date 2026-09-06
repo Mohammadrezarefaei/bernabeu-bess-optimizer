@@ -36,9 +36,7 @@ st.markdown(
 zone_mapping = {
     "Lateral Oeste (Pº de la Castellana)": {
         "mult": 1.2,
-        "desc": (
-            "Main grandstand, VIP boxes, heavy HVAC and media load."
-        ),
+        "desc": "Main grandstand, VIP boxes, heavy HVAC and media load.",
     },
     "Lateral Este (C/ Padre Damián)": {
         "mult": 1.0,
@@ -89,12 +87,18 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Display Stadium Layout Image if available in the repository
-layout_path = "bernebeu_layout.png"
-if os.path.exists(layout_path):
+# Robust image path check across potential root or asset locations
+layout_paths = ["bernebeu_layout.png", "assets/bernebeu_layout.png"]
+loaded_image = None
+for path in layout_paths:
+  if os.path.exists(path):
+    loaded_image = Image.open(path)
+    break
+
+if loaded_image is not None:
   st.subheader("Stadium Layout & Zone Mapping")
   st.image(
-      Image.open(layout_path),
+      loaded_image,
       caption="Santiago Bernabéu Layout & BESS Zones",
       use_container_width=True,
   )
