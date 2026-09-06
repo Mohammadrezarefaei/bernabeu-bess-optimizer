@@ -2,8 +2,6 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import os
-from PIL import Image
 from utils.scenarios import generate_stadium_load_profile
 from models.optimizer import run_bess_optimization
 from models.financials import calculate_bankable_financials
@@ -29,26 +27,16 @@ zone_mapping = {
     "Fondo Sur (C/ Avda. De Concha Espina)": {"mult": 1.1, "desc": "South stand, massive crowd surge capacity and concourse services."}
 }
 
-col_map, col_controls = st.columns(2)
-
-with col_map:
-    st.subheader("Stadium Layout")
-    try:
-        thumb_path = "bernabeu_thumb.png"
-        if not os.path.exists(thumb_path):
-            img = Image.open("bernabeu_layout.png")
-            img.thumbnail((350, 350))
-            img.save(thumb_path)
-        st.image(thumb_path, width=320)
-    except FileNotFoundError:
-        st.error("⚠️ File 'bernabeu_layout.png' not found in root directory.")
-
-with col_controls:
-    st.subheader("Configuration Panel")
+st.subheader("Configuration Panel")
+col1_c, col2_c, col3_c = st.columns(3)
+with col1_c:
     selected_stand = st.selectbox("Select Zone / Stand", list(zone_mapping.keys()))
+with col2_c:
     scenario = st.selectbox("Operating Scenario", ["Concert / Mega Event Day", "Match Day", "Non-Event Day"])
+with col3_c:
     power_rating = st.slider("BESS Power Rating (MW)", 2.0, 15.0, 5.0, 0.5)
-    energy_capacity = st.slider("BESS Energy Capacity (MWh)", 4.0, 30.0, 10.0, 1.0)
+
+energy_capacity = st.slider("BESS Energy Capacity (MWh)", 4.0, 30.0, 10.0, 1.0)
 
 current_zone = zone_mapping[selected_stand]
 
