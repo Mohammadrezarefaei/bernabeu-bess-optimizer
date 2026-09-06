@@ -1,1 +1,7 @@
-
+{
+  "Spain": {
+    "base_price": 80.0,
+    "peak_price": 180.0,
+    "demand_charge": 35.0
+  }
+}
